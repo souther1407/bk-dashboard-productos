@@ -38,7 +38,11 @@ export default class ManagerProductos {
   }
 
   async getProductos() {
-    return await prisma.productos.findMany();
+    return await prisma.productos.findMany({
+      include: {
+        imgs: true,
+      },
+    });
   }
   async createProducto(newProducto) {
     const producto = await prisma.productos.create({
