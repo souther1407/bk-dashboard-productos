@@ -1,4 +1,4 @@
-import CategoriasManager from "../managers/categorias.manager";
+import CategoriasManager from "../managers/categorias.manager.js";
 
 export default class CategoriasController {
   static instance = null;

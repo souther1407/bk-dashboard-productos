@@ -11,7 +11,9 @@ export default class ManagerCategorias {
   }
 
   async getCategorias() {
-    return await prisma.categorias.findMany();
+    return await prisma.categorias.findMany({
+      select: { id: true, nombre: true },
+    });
   }
   async createCategorias(newProducto) {
     const producto = await prisma.categorias.create({

@@ -12,7 +12,11 @@ export default class ProductosController {
 
   async getProductos(req, res) {
     try {
-      const products = await ProductManager.getInstance().getProductos();
+      const { num = 10, page = 1 } = req.query;
+      const products = await ProductManager.getInstance().getProductos(
+        Number(num),
+        Number(page)
+      );
       res.status(200).json(products);
     } catch (error) {
       res.status(400).json({ error: error.message });

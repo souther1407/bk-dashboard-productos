@@ -9,28 +9,44 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+enum Rol {
+  ADMIN
+  USER
 }
 
 model Productos {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  categoria String   @db.VarChar(50)
-  titulo    String   @db.VarChar(50)
-  descripcion String?
-  cantidad  Int @default(0)
+  id             Int      @id @default(autoincrement())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  categorias     Categorias[]
+  destacado      Boolean @default(false)
+  titulo         String   @db.VarChar(50)
+  descripcion    String?
+  cantidad       Int @default(0)
   precioUnitario Float
-  imgs Multimedia[]
+  imgs           Multimedia[]
+}
+
+
+model Usuarios {
+   id      Int    @id @default(autoincrement())
+   correo  String @db.VarChar(75)
+   
+  
 }
 
 model Categorias {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  nombre String   @db.VarChar(50)
+  nombre    String   @db.VarChar(50)
+  productos Productos[]
 }
+
+
 
 model Multimedia {
   id         Int      @id @default(autoincrement())

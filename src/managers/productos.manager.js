@@ -37,16 +37,40 @@ export default class ManagerProductos {
     return ManagerProductos.instance;
   }
 
-  async getProductos() {
-    return await prisma.productos.findMany({
+  async getProductos(num = 5, page = 1) {
+    const count = await prisma.productos.count();
+    const elements = await prisma.productos.findMany({
       include: {
         imgs: true,
+        categorias: {
+          select: { id: true, nombre: true },
+        },
       },
+      skip: (page - 1) * num,
+      take: num,
     });
+    return {
+      total: count,
+      totalPages: Math.ceil(count / num),
+      elements,
+    };
   }
   async createProducto(newProducto) {
+    const categoriasExistentes = await prisma.categorias.findMany({
+      where: {
+        nombre: { in: newProducto.categorias },
+      },
+    });
     const producto = await prisma.productos.create({
-      data: { ...newProducto, imgs: { create: [...newProducto.imgs] } },
+      data: {
+        ...newProducto,
+        imgs: { create: [...newProducto.imgs] },
+        categorias: {
+          connect: categoriasExistentes.map((categoria) => ({
+            id: categoria.id,
+          })),
+        },
+      },
       include: {
         imgs: true,
       },
